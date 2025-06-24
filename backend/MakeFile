@@ -1,0 +1,38 @@
+.PHONY: run dev build test clean install
+
+# Development
+dev:
+	go run cmd/server/main.go
+
+# Build
+build:
+	go build -o bin/server cmd/server/main.go
+
+# Run built binary
+run:
+	./bin/server
+
+# Install dependencies
+install:
+	go mod tidy
+	go mod download
+
+# Test
+test:
+	go test -v ./...
+
+# Clean
+clean:
+	rm -rf bin/
+	go clean
+
+# Database migrations (jika menggunakan migrate tool)
+migrate-up:
+	migrate -path internal/database/migrations -database ${DATABASE_URL} up
+
+migrate-down:
+	migrate -path internal/database/migrations -database ${DATABASE_URL} down
+
+# Hot reload development (install air first: go install github.com/cosmtrek/air@latest)
+air:
+	air
